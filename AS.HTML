@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador Léxico y Sintáctico</title>
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Analizador Léxico y Sintáctico</h1>
+    <div class="container">
+        <div class="input-container">
+            <h2>Entrada</h2>
+            <textarea id="input-text" rows="10" style="width: 100%;">mientras (x < 10) { x = x + 1; }</textarea>
+            <div class="button-container">
+                <button id="analyze-lexical-button" onclick="analizarLexico()" class="ui-btn"><span>Lexico</span></button>
+                <button id="analyze-syntax-button" onclick="analizarSintactico()" class="ui-btn"><span>Sintactico</span></button>
+            </div>
+        </div>
+        <div class="output-container">
+            <h2>Salida</h2>
+            <textarea id="output-text" rows="20" style="width: 100%;" readonly></textarea>
+        </div>
+    </div>
+
+    <footer>MFV</footer>
+
+    <py-script>
+        import re
+
+        # Definimos la función analizador_lexico
+        def analizador_lexico(texto):
+            tokens = []
+            while texto:
+                match = None
+                for token_regex, token_tipo in token_patterns:
+                    match = re.match(token_regex, texto)
+                    if match:
+                        if token_tipo: # Ignorar None (espacios en blanco)
+                            tokens.append((match.group(0), token_tipo))
+                        texto = texto[match.end():]
+                        break
+                if not match:
+                    raise ValueError(f'Error léxico: {texto[0]} en "{texto}"')
+            return tokens
+
+        # Definimos las reglas gramaticales para el analizador sintáctico
+        def parse(tokens):
+            def expect(token_type):
+                nonlocal tokens
+                if tokens and tokens[0][1] == token_type:
+                    return tokens.pop(0)
+                else:
+                    raise ValueError(f'Se esperaba {token_type} pero se encontró {tokens[0][1] if tokens else "EOF"}')
+
+            def parse_S():
+                return parse_StmtList()
+
+            def parse_StmtList():
+                stmts = []
+                while tokens and tokens[0][1] != 'SIMBOLO_ESPECIAL':
+                    stmts.append(parse_Stmt())
+                return stmts
+
+            def parse_Stmt():
+                if tokens[0][1] == 'PALABRA_CLAVE':
+                    if tokens[0][0] == 'mientras':
+                        return parse_While()
+                    elif tokens[0][0] == 'si':
+                        return parse_If()
+                    elif tokens[0][0] == 'sino':
+                        raise ValueError(f'Error sintáctico: "sino" sin "si" previo')
+                elif tokens[0][1] == 'IDENTIFICADOR':
+                    return parse_Assignment()
+                else:
+                    raise ValueError(f'Error sintáctico: declaración inválida en {tokens[0]}')
+
+            def parse_Assignment():
+                id_token = expect('IDENTIFICADOR')
+                expect('ASIGNACION')
+                expr = parse_Expr()
+                expect('PUNTO_COMA')
+                return ('asignacion', id_token, expr)
+
+            def parse_If():
+                expect('PALABRA_CLAVE')  # si
+                expect('PARENTESIS_IZQ')
+                expr = parse_Expr()
+                expect('PARENTESIS_DER')
+                expect('SIMBOLO_ESPECIAL')  # {
+                stmt_list = parse_StmtList()
+                expect('SIMBOLO_ESPECIAL')  # }
+                if tokens and tokens[0][0] == 'sino':
+                    expect('PALABRA_CLAVE')  # sino
+                    expect('SIMBOLO_ESPECIAL')  # {
+                    else_stmt_list = parse_StmtList()
+                    expect('SIMBOLO_ESPECIAL')  # }
+                    return ('si_sino', expr, stmt_list, else_stmt_list)
+                return ('si', expr, stmt_list)
+
+            def parse_While():
+                expect('PALABRA_CLAVE')  # mientras
+                expect('PARENTESIS_IZQ')
+                expr = parse_Expr()
+                expect('PARENTESIS_DER')
+                expect('SIMBOLO_ESPECIAL')  # {
+                stmt_list = parse_StmtList()
+                expect('SIMBOLO_ESPECIAL')  # }
+                return ('mientras', expr, stmt_list)
+
+            def parse_Expr():
+                term = parse_Term()
+                while tokens and tokens[0][1] in ('OPERADOR_ADITIVO', 'OPERADOR_RELACIONAL'):
+                    op = tokens.pop(0)
+                    term = ('op', op, term, parse_Term())
+                return term
+
+            def parse_Term():
+                factor = parse_Factor()
+                while tokens and tokens[0][1] == 'OPERADOR_MULTIPLICATIVO':
+                    op = tokens.pop(0)
+                    factor = ('op', op, factor, parse_Factor())
+                return factor
+
+            def parse_Factor():
+                if tokens[0][1] == 'PARENTESIS_IZQ':
+                    expect('PARENTESIS_IZQ')
+                    expr = parse_Expr()
+                    expect('PARENTESIS_DER')
+                    return expr
+                elif tokens[0][1] == 'IDENTIFICADOR':
+                    return expect('IDENTIFICADOR')
+                elif tokens[0][1] == 'NUMERO':
+                    return expect('NUMERO')
+                else:
+                    raise ValueError(f'Error sintáctico: factor inválido en {tokens[0]}')
+
+            return parse_S()
+
+        # Definimos los patrones y sus acciones
+        token_patterns = [
+            (r'\b(si|sino|mientras|para|función|retorno|clase|importar|verdadero|falso)\b', 'PALABRA_CLAVE'),
+            (r'[a-zA-Z_][a-zA-Z0-9_]*', 'IDENTIFICADOR'),
+            (r'=', 'ASIGNACION'),
+            (r'\d+(\.\d+)?', 'NUMERO'),
+            (r'\+', 'OPERADOR_ADITIVO'),
+            (r'\-', 'OPERADOR_ADITIVO'),
+            (r'\*', 'OPERADOR_MULTIPLICATIVO'),
+            (r'/', 'OPERADOR_MULTIPLICATIVO'),
+            (r'[<>]=?|==|!=', 'OPERADOR_RELACIONAL'),  # Patrones para operadores relacionales
+            (r'[{}]', 'SIMBOLO_ESPECIAL'),
+            (r'\(', 'PARENTESIS_IZQ'),
+            (r'\)', 'PARENTESIS_DER'),
+            (r';', 'PUNTO_COMA'),
+            (r'#.*', None),  # Ignorar comentarios
+            (r'\s+', None), # Ignorar espacios en blanco
+        ]
+
+        # Definimos la función para procesar el texto de entrada
+        def procesar_entrada(input_text):
+            try:
+                tokens = analizador_lexico(input_text)
+                output_text = '\n'.join([f"{token[0]} - {token[1]}" for token in tokens])
+            except ValueError as e:
+                output_text = str(e)
+            return output_text
+
+        # Definimos la función para análisis sintáctico
+        def analizarSintactico(input_text):
+            try:
+                tokens = analizador_lexico(input_text)
+                parse_tree = parse(tokens)
+                output_text = 'Análisis sintáctico exitoso.\n' + str(parse_tree)
+            except ValueError as e:
+                output_text = str(e)
+            return output_text
+
+        # Registramos las funciones en PyScript
+        from js import window
+        window.procesarEntrada = procesar_entrada
+        window.analizador_sintactico = analizarSintactico
+    </py-script>
+
+<script>
+    function analizarLexico() {
+        const inputText = document.getElementById('input-text').value;
+        const outputText = window.procesarEntrada(inputText);
+        document.getElementById('output-text').value = outputText;
+    }
+
+    function analizarSintactico() {
+        const inputText = document.getElementById('input-text').value;
+        try {
+            const message = window.analizador_sintactico(inputText);
+            document.getElementById('output-text').value = message;
+        } catch (error) {
+            document.getElementById('output-text').value = error.message;
+        }
+    }
+</script>
+</body>
+</html>

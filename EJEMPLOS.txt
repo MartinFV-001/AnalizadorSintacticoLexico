@@ -1,0 +1,19 @@
+EJEMPLOS:
+
+Asignación simple
+x = 42;
+
+Uso de variables y operaciones:
+a = 5;
+b = 10;
+resultado = a * b;
+
+Expresión aritmética
+y = 3 + 5 * (10 - 4);
+
+
+Palabra Clave Funcion
+mientras (x < 10) { x = x + 1; }
+
+Comentario:
+#HOLA
