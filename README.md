@@ -56,7 +56,7 @@ Ing. Rodolfo Baumé Lazcano
 <h2 style="text-align: center;" id="propósito">Propósito</h2>
 <p>El analizador sintáctico se encarga de verificar la estructura gramatical del código fuente, asegurando que esté conforme a las reglas del lenguaje de programación. Este proceso es crucial en la fase de compilación o interpretación del lenguaje, ya que una correcta sintaxis es fundamental para la correcta ejecución del programa.</p>
 
-<div style="text-align: center;">
+<div align="center">
     <img src="img/proposito.png" alt="Propósito">
 </div>
 
@@ -65,7 +65,7 @@ Ing. Rodolfo Baumé Lazcano
 <h2 style="text-align: center;" id="qué-es-un-analizador-sintactico">¿Qué es un analizador sintactico?</h2>
 <p>Un analizador sintáctico o parser (viene del inglés: parse - analizar una cadena o texto en componentes sintácticos lógicos) es un programa que normalmente es parte de un compilador. El compilador se asegura de que el código se traduce correctamente a un lenguaje ejecutable.</p>
 
-<div style="text-align: center;">
+<div align="center">
     <img src="img/quees.png" alt="¿Qué es un analizador sintactico?">
 </div>
 
@@ -147,8 +147,8 @@ Ing. Rodolfo Baumé Lazcano
     <li><strong>Comentarios:</strong> <code>#.*</code></li>
 </ul>
 
-<div style="text-align: center;">
-    <img src="img/expresiones.png" alt="Expresiones Regulares">
+<div align="center">
+    <img src="img/01.png" alt="Expresiones Regulares">
 </div>
 
 ---
@@ -157,29 +157,40 @@ Ing. Rodolfo Baumé Lazcano
   
 </p>Los comentarios en el código fuente se manejan mediante la expresión regular r'#.*'. Estos son ignorados completamente por el analizador léxico, ya que están asociados a None.</p>
 
+<div align="center">
+    <img src="img/02.png" alt="Expresiones Regulares">
+</div>
 ---
 
 <h2 style="text-align: center;" id="prioridad-de-coincidencia">Prioridad de Coincidencia</h2>
 <p>Cuando una misma secuencia de caracteres puede corresponder a múltiples tokens, se priorizan las coincidencias más largas. Esto se logra al ordenar las expresiones regulares de manera que las coincidencias más específicas aparezcan primero.</p>
 
+<div align="center">
+    <img src="img/03.png" alt="Expresiones Regulares">
+</div>
 ---
 
 <h2 style="text-align: center;" id="acciones-asociadas-a-los-tokens">Acciones Asociadas a los Tokens</h2>
 <p>Las acciones asociadas a cada token incluyen la asignación de un tipo de token y la recopilación de información adicional, como el valor de un número. Si un carácter o secuencia no coincide con ningún patrón, se genera un error léxico.</p>
 
+<div align="center">
+    <img src="img/04.png" alt="Expresiones Regulares">
+</div>
 ---
 
 <h2 style="text-align: center;" id="manejo-de-errores">Manejo de errores</h2>
 <p>Los errores de análisis léxico y sintáctico se manejan generando mensajes de error descriptivos y deteniendo el análisis. Esto asegura que los problemas en el código fuente se identifiquen y reporten de manera clara.</p>
 
-
+<div align="center">
+    <img src="img/05.png" alt="Expresiones Regulares">
+</div>
 ---
 
 <h2 style="text-align: center;" id="conclusión">Conclusión</h2>
 <p>El analizador sintáctico es un componente indispensable en el proceso de compilación que aporta estructura y coherencia al análisis del código fuente. Su capacidad para verificar la corrección sintáctica, facilitar el análisis semántico, y proporcionar una base para la optimización y generación de código, lo convierte en un pilar fundamental para la construcción de compiladores eficientes y robustos. A través de un análisis sintáctico riguroso, los compiladores pueden ofrecer herramientas más poderosas y amigables para los desarrolladores, contribuyendo significativamente a la calidad y eficiencia del software producido.</p>
 
 <div style="text-align: center;">
-    <img src="img/conclusion.png" alt="Conclusión">
+    <img src="img/con.jpg" alt="Conclusión">
 </div>
 
 ---
