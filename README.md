@@ -189,7 +189,7 @@ Ing. Rodolfo Baumé Lazcano
 <h2 style="text-align: center;" id="conclusión">Conclusión</h2>
 <p>El analizador sintáctico es un componente indispensable en el proceso de compilación que aporta estructura y coherencia al análisis del código fuente. Su capacidad para verificar la corrección sintáctica, facilitar el análisis semántico, y proporcionar una base para la optimización y generación de código, lo convierte en un pilar fundamental para la construcción de compiladores eficientes y robustos. A través de un análisis sintáctico riguroso, los compiladores pueden ofrecer herramientas más poderosas y amigables para los desarrolladores, contribuyendo significativamente a la calidad y eficiencia del software producido.</p>
 
-<div style="text-align: center;">
+<div align="center">
     <img src="img/con.jpg" alt="Conclusión">
 </div>
 
@@ -198,7 +198,7 @@ Ing. Rodolfo Baumé Lazcano
 <h2 style="text-align: center;" id="interface-gráfica-o-aplicación">Interface Gráfica o Aplicación</h2>
 <p>Una interfaz gráfica de usuario (GUI) o una aplicación puede facilitar la interacción con el analizador léxico, permitiendo a los usuarios ingresar código y ver los resultados del análisis en tiempo real. Esta interfaz debe ser intuitiva y amigable para el usuario.</p>
 
-<div style="text-align: center;">
+<div align="center">
     <img src="img/ig.png" alt="Interface Gráfica">
 </div>
 
